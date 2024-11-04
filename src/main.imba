@@ -19,9 +19,14 @@ tag app
 	get render? do mounted?
 
 	get api_key
-		process.env.OPEN_EXCHANGE_RATES_API_KEY
+		imba.locals.api_key
+
+	set api_key val
+		imba.locals.api_key = val
 
 	def mount
+		api_key ??= global.prompt('Open exchange rates api key') or undefined
+
 		return if fatal
 
 		imba.locals.query ??= ''
@@ -109,17 +114,17 @@ tag app
 							@.pinned bg:#fg
 							> fl:1 d:vcc
 						<div>
-							<div> code
+							<div> "USD to {code}"
 							<div> (rates[code] * amount).toFixed(2)
 						<div>
-							<div> 'USD'
+							<div> "{code} to USD"
 							<div> (amount / rates[code]).toFixed(2)
 
 			<.glassy>
-				css pos:abs b:0 w:100% d:vts us:none
+				css pos:abs b:0 w:100% d:vts us:none h:50vh
 					bxs:0 0 10px #1f212e
 					> d:hcs fl:1
-					%btn s:100% d:hcc e:200ms mih:100px
+					%btn s:100% d:hcc e:200ms
 						@media(hover) @hover bg:white/2
 						@.active bg:white/3.5
 						@active bg:white/5
@@ -141,7 +146,7 @@ tag app
 					<%btn @click=add(0)> 0
 					<%btn @click=del> 'del'
 				<div>
-					css %btn pb:40px mih:140px
 					<%btn @click=clear> 'clear'
+						css mih:125px
 
 imba.mount <app>
